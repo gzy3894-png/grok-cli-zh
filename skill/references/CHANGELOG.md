@@ -1,5 +1,31 @@
 # Grok UI 汉化改动记录
 
+## 2026-07-17 — 汉字残缺二次修复（CJK ambiguous width round 2）
+
+### 用户反馈
+
+汉化版仍见汉字残缺（首字被挤掉）：状态行 `监视中`、`条排队`、dashboard 空闲/标题、图标旁中文等。
+
+### 根因（本轮）
+
+v1.0.0（d897b03）已修 `context_info` / `prompt_widget` 的 `·` 分隔与图例双空格，但 **turn_status** 仍用 U+00B7 拼接中文，**dashboard** 状态菱形按 unicode-width=1 推进光标，CJK 字体画 2 列 → 后续汉字首字被覆盖。
+
+### 修复（源码 ui-zh，编译走云端 Actions）
+
+| 文件 | 改动 |
+|------|------|
+| `glyphs.rs` | 新增 `glyph_layout_cols()`：模糊宽标记预留 ≥2 列 |
+| `turn_status.rs` | SEP=` \| `；菱形/监视帧 `GLYPH_PAD`；排队 hint 去 middot/em-dash |
+| `dashboard/render.rs` | 行图标/chip 用 layout_cols + 双空格 |
+| `session_event.rs` | 记忆保存行 `·`→`\|` |
+| `image_overlay/content.rs` | 路径中文 + meta join `\|` |
+| `context_info` / `row` tests | 对齐中文与 ASCII SEP 断言 |
+
+### 约束
+
+- **禁止本机 cargo 全量编译**；push `ui-zh` 后 GitHub Actions 出包。
+- 只改 UI 布局/分隔与可见文案，不动 wire id。
+
 ## 2026-07-17 — PLAN 关卡 G0–G7 整包清零（待演示确认后一次 CI）
 
 ### 流程
