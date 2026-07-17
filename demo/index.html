@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grok CLI 汉化演示 · G0–G7 全关清零</title>
+<link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0d0d; --text: #e6e6e6; --muted: #8a8a8a;
+    --green: #8fbc8f; --yellow: #c9b458; --teal: #5a9a9a;
+    --mono: "Cascadia Mono", "Noto Sans SC", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #1c1c1c; color: var(--text);
+    font-family: var(--mono); font-size: 13px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 12px 32px; line-height: 1.45;
+  }
+  .note {
+    width: min(1000px, 100%); font-family: "Noto Sans SC", system-ui, sans-serif;
+    font-size: 12.5px; color: #9a9a9a; margin-bottom: 12px; line-height: 1.55;
+  }
+  .note strong { color: #eee; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag {
+    border: 1px solid #444; border-radius: 999px; padding: 2px 10px;
+    font-size: 11.5px; background: #222; color: #bbb;
+  }
+  .tag.ok { border-color: #3a5a3a; color: var(--green); }
+  .tag.warn { border-color: #665522; color: var(--yellow); }
+  .tabs { width: min(1000px, 100%); display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tabs button {
+    font-family: "Noto Sans SC", system-ui, sans-serif; font-size: 12.5px;
+    background: #2a2a2a; border: 1px solid #444; color: #ccc;
+    border-radius: 8px; padding: 7px 12px; cursor: pointer;
+  }
+  .tabs button.on { border-color: #6a9; color: #dff; background: #1e2a28; }
+  .win {
+    width: min(1000px, 100%); min-height: 500px; background: var(--bg);
+    border: 1px solid #333; border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.55); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .titlebar {
+    height: 36px; background: #2b2b2b; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 12px; font-size: 12px; color: #ccc;
+  }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .r { background: #ff5f57; } .y { background: #febc2e; } .g { background: #28c840; }
+  .term { flex: 1; display: flex; flex-direction: column; min-height: 460px; }
+  .topbar {
+    display: flex; justify-content: space-between; padding: 10px 14px 4px;
+    color: var(--muted); font-size: 12px;
+  }
+  .scroll { flex: 1; overflow: auto; padding: 8px 16px 12px; }
+  .scene { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .scene.on { display: flex; }
+  .welcome-box {
+    margin: 36px auto 0; max-width: 640px; border: 1px solid #3a3a3a;
+    border-radius: 8px; padding: 18px 20px; color: #cfcfcf;
+  }
+  .menu-row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .menu-row .key { color: #777; }
+  .welcome-foot { margin: 40px 8px 8px; text-align: right; color: #777; font-size: 12px; }
+  .legend { color: #b0b0b0; font-size: 12.5px; margin: 3px 0; white-space: pre; }
+  .ctx-foot { color: #777; margin-top: 8px; font-size: 12.5px; }
+  .msg-user {
+    background: #2c2c2c; border-radius: 6px; padding: 8px 12px; margin: 8px 0;
+    display: flex; justify-content: space-between; color: #cfcfcf;
+  }
+  .bottom { padding: 0 10px 8px; }
+  .prompt-box {
+    border: 1px solid #4a4a4a; border-radius: 10px; background: #0f0f0f; padding: 10px 12px 8px;
+  }
+  .prompt-row { display: flex; gap: 8px; color: #cfcfcf; }
+  .prompt-meta {
+    display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px;
+    color: #8a8a8a; font-size: 12px;
+  }
+  .prompt-meta .mode { color: #c9b458; }
+  .footer {
+    display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 8px 2px;
+    color: #6e6e6e; font-size: 12px;
+  }
+  .footer .k { color: #8a8a8a; } .footer .k::after { content: ":"; margin-right: 2px; }
+  .img-chip {
+    margin: 50px auto 0; max-width: 420px; border: 1px solid #3a4a5a;
+    border-radius: 6px; padding: 14px; color: #a0a0a0; position: relative;
+  }
+  .img-chip .head {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--bg); padding: 0 10px; color: #888; font-size: 12px; white-space: nowrap;
+  }
+  .dash {
+    border: 1px solid #333; border-radius: 8px; padding: 12px; margin-top: 8px; color: #bbb;
+  }
+  .dash .row { padding: 6px 0; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+  .dash .row:last-child { border-bottom: 0; }
+  .chip { color: #8fbc8f; font-size: 12px; }
+  .progress {
+    width: min(1000px, 100%); margin-top: 18px;
+    font-family: "Noto Sans SC", system-ui, sans-serif; font-size: 12.5px; color: #ccc;
+  }
+  .progress h2 { margin: 0 0 8px; font-size: 14px; color: #eee; }
+  .progress table {
+    width: 100%; border-collapse: collapse; background: #141414;
+    border: 1px solid #333; border-radius: 8px; overflow: hidden;
+  }
+  .progress th, .progress td {
+    text-align: left; padding: 7px 10px; border-bottom: 1px solid #2a2a2a;
+  }
+  .progress th { background: #1c1c1c; color: #aaa; }
+  .ok { color: var(--green); }
+  .todo { color: #b07070; }
+  code { color: #b8d0b8; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+  .card { border: 1px solid #333; border-radius: 8px; padding: 12px; background: #111; }
+  .card h3 { margin: 0 0 8px; font-size: 12px; font-family: "Noto Sans SC", system-ui, sans-serif; }
+  .card.bad h3 { color: #c07070; } .card.good h3 { color: var(--green); }
+  .card pre { margin: 0; white-space: pre-wrap; color: #b8b8b8; font-size: 12.5px; line-height: 1.55; }
+  .hl-bad { color: #e08080; background: #3a2020; padding: 0 2px; }
+  .hl-good { color: #9fd49f; background: #1a2e1a; padding: 0 2px; }
+</style>
+</head>
+<body>
+  <div class="note">
+    <strong>PLAN 关卡演示 · G0–G7 源码已清</strong><br/>
+    inventory <code>Remaining EN: 0</code>（P0=P1=P2=0）。浏览器模拟 TUI，非真终端。
+    <div class="tags">
+      <span class="tag ok">清单过关 · 可一次 push+CI</span>
+      <span class="tag warn">本机 exe 仍是旧 tip 63f9675 · 不含本轮</span>
+      <span class="tag">你确认后才推云端编译</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button type="button" class="on" data-s="compare">① 缺字修前/后</button>
+    <button type="button" data-s="welcome">② 欢迎</button>
+    <button type="button" data-s="context">③ 上下文</button>
+    <button type="button" data-s="dash">④ 仪表盘</button>
+    <button type="button" data-s="image">⑤ 图片</button>
+    <button type="button" data-s="chat">⑥ 底栏+快捷键</button>
+  </div>
+
+  <div class="win">
+    <div class="titlebar">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <div id="ttl">演示 · G0–G7</div>
+      <div style="color:#888;letter-spacing:8px">─ □ ×</div>
+    </div>
+    <div class="term">
+      <div class="scene on" id="s-compare">
+        <div class="topbar"><span>D:\grok-cli\workspace</span><span>inventory EN=0</span></div>
+        <div class="scroll">
+          <div class="compare">
+            <div class="card bad"><h3>旧 exe（缺字）</h3>
+<pre>Grok 4.5 · <span class="hl-bad">终批准</span>
+○  <span class="hl-bad">闲</span>  494k
+回合 · <span class="hl-bad">具调用</span> · <span class="hl-bad">缩次数</span>
+Enter:send | mode</pre></div>
+            <div class="card good"><h3>本轮源码</h3>
+<pre>Grok 4.5 | <span class="hl-good">始终批准</span>
+○  <span class="hl-good">空闲</span>  494k
+回合 | <span class="hl-good">工具调用</span> | <span class="hl-good">压缩次数</span>
+Enter:发送 | Shift+Tab:模式</pre></div>
+          </div>
+          <p style="color:#888;margin-top:14px;font-family:Noto Sans SC,system-ui,sans-serif;font-size:12.5px">
+            根因：歧义宽度 <code>·</code>/<code>○</code> 挤掉后续汉字。修：分隔 <code>|</code> + 双空格 + display-width。
+          </p>
+        </div>
+      </div>
+
+      <div class="scene" id="s-welcome">
+        <div class="topbar"><span>D:\grok-cli\workspace</span><span></span></div>
+        <div class="scroll">
+          <div class="welcome-box">
+            <div>Grok Build Beta &nbsp; 0.2.0-dev</div>
+            <div style="color:#888;margin:10px 0 6px">更新日志</div>
+            <ul style="color:#777;margin:0 0 14px;padding-left:18px">
+              <li>（上游 dummy 条目可能仍为英文）</li>
+            </ul>
+            <div class="menu-row"><span>新建工作树</span><span class="key">ctrl+w</span></div>
+            <div class="menu-row"><span>恢复会话</span><span class="key">ctrl+s</span></div>
+            <div class="menu-row"><span>更新日志</span><span class="key"></span></div>
+            <div class="menu-row"><span>退出</span><span class="key">ctrl+q</span></div>
+          </div>
+          <div class="welcome-foot">已通过 API 密钥登录 │ Beta</div>
+        </div>
+        <div class="bottom">
+          <div class="prompt-box">
+            <div class="prompt-row"><span>›</span></div>
+            <div class="prompt-meta"><span>Grok 4.5 (high)</span><span>|</span><span class="mode">始终批准</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene" id="s-context">
+        <div class="topbar"><span>D:\grok-cli\workspace</span><span>5.8K / 500K</span></div>
+        <div class="scroll">
+          <div class="msg-user"><span>› 缺字漏字，汉化不全</span><span style="color:#777">8:29</span></div>
+          <div class="legend">◆ 系统提示   1.0k tokens</div>
+          <div class="legend">◆ 消息       4.8k tokens</div>
+          <div class="legend">○ 空闲        494k tokens</div>
+          <div class="legend">◈ 工具定义   8.4k | 28 工具</div>
+          <div class="legend">◈ 技能       2.8k | 33 技能</div>
+          <div class="ctx-foot">自动压缩阈值 80% | 约剩 394k tokens</div>
+          <div class="ctx-foot">回合: 1 | 工具调用: 0 | 压缩次数: 0</div>
+          <div class="ctx-foot">/ 等待响应…</div>
+        </div>
+        <div class="bottom">
+          <div class="prompt-box">
+            <div class="prompt-row"><span>›</span></div>
+            <div class="prompt-meta"><span>Grok 4.5 (high)</span><span>|</span><span class="mode">始终批准</span></div>
+          </div>
+          <div class="footer">
+            <span><span class="k">Shift+Tab</span>模式</span>
+            <span><span class="k">Ctrl+c</span>取消</span>
+            <span><span class="k">Ctrl+x</span>快捷键</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene" id="s-dash">
+        <div class="topbar"><span>仪表盘</span><span class="chip">◆ 1 工作中 · ◇ 0 空闲</span></div>
+        <div class="scroll">
+          <div class="dash">
+            <div class="row"><span>◆ agent-1 | 工作中</span><span style="color:#777">Grok 4.5 | 始终批准</span></div>
+            <div class="row"><span>◇ agent-2 | 空闲</span><span style="color:#777">等待输入</span></div>
+            <div class="row" style="color:#666"><span>暂无会话 — 按 Esc 派发</span><span></span></div>
+          </div>
+          <div style="color:#777;margin-top:12px;font-family:Noto Sans SC,system-ui,sans-serif;font-size:12.5px">
+            HintItem：发送 / 打开 / 模式 / 新代理 / 导航 … 已中文
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="footer">
+            <span><span class="k">Enter</span>发送</span>
+            <span><span class="k">Tab</span>列表</span>
+            <span><span class="k">Shift+Tab</span>模式</span>
+            <span><span class="k">Esc</span>返回</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene" id="s-image">
+        <div class="topbar"><span>D:\grok-cli\workspace</span><span>3.9K / 500K</span></div>
+        <div class="scroll">
+          <div class="img-chip">
+            <div class="head">Image #1 — PNG · 1223×638 · 75.7 KB</div>
+            格式: PNG<br/>尺寸: 1223 x 638<br/>大小: 75.7 KB
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="prompt-box">
+            <div class="prompt-row"><span>›</span><span style="color:#9ab">[Image #1]</span></div>
+            <div class="prompt-meta"><span>Grok 4.5 (high)</span><span>|</span><span class="mode">始终批准</span></div>
+          </div>
+          <div class="footer">
+            <span><span class="k">Enter</span>发送</span>
+            <span><span class="k">Alt+Enter</span>换行</span>
+            <span><span class="k">Shift+Tab</span>模式</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene" id="s-chat">
+        <div class="topbar"><span>D:\grok-cli\workspace</span><span>186K / 500K</span></div>
+        <div class="scroll">
+          <div class="msg-user"><span>› 全部过关再一起推送</span><span style="color:#777">now</span></div>
+          <div style="color:#aaa;margin:10px 0;font-family:Noto Sans SC,system-ui,sans-serif;line-height:1.55">
+            G2：快捷键帮助 Enter 详情为中文 long_help（55 条）。<br/>
+            G3：/ 命令描述中文；命令字仍英文。<br/>
+            确认本页后回复「确认推送」→ 一次 commit + Actions。
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="prompt-box">
+            <div class="prompt-row"><span>›</span><span style="color:#555">输入 / 打开命令条…</span></div>
+            <div class="prompt-meta"><span>Grok 4.5 (high)</span><span>|</span><span class="mode">始终批准</span></div>
+          </div>
+          <div class="footer">
+            <span><span class="k">Enter</span>发送</span>
+            <span><span class="k">Alt+Enter</span>换行</span>
+            <span><span class="k">Shift+Tab</span>模式</span>
+            <span><span class="k">Ctrl+c</span>取消</span>
+            <span><span class="k">Ctrl+Enter</span>立即发送</span>
+            <span><span class="k">Ctrl+x</span>快捷键</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="progress">
+    <h2>关卡板（PLAN）</h2>
+    <table>
+      <thead><tr><th>关</th><th>表面</th><th>状态</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td>G0</td><td>状态行/思考/回合</td><td class="ok">源码已清</td><td></td></tr>
+        <tr><td>G1</td><td>聊天+仪表盘 chrome</td><td class="ok">源码已清</td><td>HintItem 批量中文</td></tr>
+        <tr><td>G2</td><td>long_help</td><td class="ok">源码已清</td><td>55 条</td></tr>
+        <tr><td>G3</td><td>slash</td><td class="ok">源码已清</td><td>/cmd 保留英文</td></tr>
+        <tr><td>G4</td><td>welcome</td><td class="ok">源码已清</td><td></td></tr>
+        <tr><td>G5</td><td>权限</td><td class="ok">源码已清</td><td></td></tr>
+        <tr><td>G6</td><td>会话对话框</td><td class="ok">源码已清</td><td></td></tr>
+        <tr><td>G7</td><td>P2+缺字</td><td class="ok">源码已清</td><td>| 分隔</td></tr>
+        <tr><td>—</td><td>inventory</td><td class="ok">EN=0</td><td>P0=P1=P2=0</td></tr>
+        <tr><td>—</td><td>push + CI</td><td class="todo">待你确认</td><td>一次推送</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    const titles = {
+      compare: "演示 · 缺字修前/后", welcome: "欢迎屏", context: "上下文面板",
+      dash: "仪表盘", image: "图片元数据", chat: "底栏+快捷键",
+    };
+    document.querySelectorAll(".tabs button").forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("on", x === b));
+        document.querySelectorAll(".scene").forEach((s) => s.classList.toggle("on", s.id === "s-" + b.dataset.s));
+        document.getElementById("ttl").textContent = titles[b.dataset.s] || "演示";
+      });
+    });
+  </script>
+</body>
+</html>

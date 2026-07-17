@@ -1,0 +1,15 @@
+Grok CLI 汉化 (grok-cli-zh)
+Copyright 2026 gzy3894-png
+
+This product includes software developed from Grok Build (xai-grok-pager):
+
+  Grok Build
+  Copyright 2023-2026 SpaceXAI
+  https://github.com/xai-org/grok-build
+  Licensed under the Apache License, Version 2.0
+
+Chinese UI string localization and related tooling in this repository
+are modifications / additions layered on the above upstream project.
+
+The prebuilt Windows binary distributed via GitHub Releases is a
+derivative work of Grok Build with UI copy changes only.

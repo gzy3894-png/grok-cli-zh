@@ -1,0 +1,17 @@
+# binaries (ship via GitHub Releases only)
+*.exe
+*.dll
+*.zip
+dist/
+release-staging/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# inventory noise if regenerated locally
+skill/scripts/__pycache__/
+*.log
